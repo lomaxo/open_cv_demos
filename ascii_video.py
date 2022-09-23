@@ -1,50 +1,41 @@
 import cv2, numpy as np
 from PIL import Image, ImageFont, ImageDraw
+from datetime import datetime
 
 cv2.namedWindow('Original Image', cv2.WINDOW_AUTOSIZE)
 cv2.namedWindow('Ascii', cv2.WINDOW_AUTOSIZE)
 
 def text_image(text: str, width: int, height: int):
-    char_size = 6
+    char_size = 10
+    font_scaling = 0.8
     colour = (100, 255, 0)
     colour = (255, 255, 255)
     font = cv2.FONT_HERSHEY_PLAIN
     text_queue = text[:]
     image = np.zeros((height*char_size,width*char_size,3), np.uint8)
     text_x, text_y = 0, 10
-    # print(text_queue)
     while text_queue:
         next_c, text_queue = text_queue[0], text_queue[1:]
         
         if next_c == '\n':
-            # print(next_c)
             text_y += char_size
             text_x = 0
         else:
             text_x += char_size
-            image = cv2.putText(image, next_c, (text_x,text_y), font, 0.5, colour, 1, cv2.LINE_AA)
-    
-    # while len(text_queue) > width:
-    #     next_row = text_queue[:width]
-    #     text_queue = text_queue[width:]
-    #     for x, c in enumerate(next_row):
-    #         image = cv2.putText(image, c, (x*char_size,text_y), font, 0.5, colour, 1, cv2.LINE_AA)
-    #     text_y += char_size
+            image = cv2.putText(image, next_c, (text_x,text_y), font, font_scaling, colour, 1, cv2.LINE_AA)
 
     return image
 
-def ascii_vid():
+def ascii_vid(ascii_width: int = 150, chars: str= '.:-=+*#%@'):
     cap = cv2.VideoCapture(0)
-    chars = r'''$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`'. '''[::-1]
-    #chars = '''.:-=+*#%@'''
+
     if cap.isOpened():
         ret, frame = cap.read()
         orig_shape = frame.shape
         orig_height, orig_width = orig_shape[:2]
     else:
-        ret = False
+        return False
 
-    ascii_width = 150
     ascii_height = int((ascii_width / orig_width) * orig_height)
     print(f'{ascii_width=}, {ascii_height=}')
     print(f'{orig_width=}, {orig_height=}')
@@ -64,11 +55,15 @@ def ascii_vid():
         if key == 27:
             break
         if key == 32:
-            with open('./output/output.txt', 'w') as file:
+            path = './output/'
+            filename = f'ascii_capture_{datetime.now().strftime("%d%m%y%H%M%S")}.txt'
+            with open(path + filename, 'w') as file:
                 file.write(text)
+                print(f'ASCII capture saved to: {filename}')
 
-            # print(text)
     cap.release()
 
-ascii_vid()  
+
+chars = r'''$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`'. '''[::-1]
+ascii_vid(100, chars)  
 cv2.destroyAllWindows()
