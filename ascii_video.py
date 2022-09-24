@@ -3,7 +3,7 @@ from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime
 
 cv2.namedWindow('Original Image', cv2.WINDOW_AUTOSIZE)
-cv2.namedWindow('Ascii', cv2.WINDOW_AUTOSIZE)
+cv2.namedWindow('Ascii', cv2.WINDOW_NORMAL)
 
 def text_image(text: str, width: int, height: int):
     char_size = 10
@@ -27,7 +27,7 @@ def text_image(text: str, width: int, height: int):
     return image
 
 def ascii_vid(ascii_width: int = 150, chars: str= '.:-=+*#%@'):
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture('/dev/video4')
 
     if cap.isOpened():
         ret, frame = cap.read()
@@ -44,7 +44,7 @@ def ascii_vid(ascii_width: int = 150, chars: str= '.:-=+*#%@'):
         ret, frame = cap.read()
         resized = cv2.resize(frame, (ascii_width,ascii_height), interpolation = cv2.INTER_AREA)
         gray_scale = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-        cv2.imshow('Original Image', gray_scale)
+        # cv2.imshow('Original Image', gray_scale)
         text = ''
         for row in gray_scale:
             for p in row:
@@ -65,5 +65,5 @@ def ascii_vid(ascii_width: int = 150, chars: str= '.:-=+*#%@'):
 
 
 chars = r'''$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`'. '''[::-1]
-ascii_vid(100, chars)  
+ascii_vid(250, chars)  
 cv2.destroyAllWindows()
