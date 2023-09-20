@@ -27,7 +27,8 @@ def text_image(text: str, width: int, height: int):
     return image
 
 def ascii_vid(ascii_width: int = 150, chars: str= '.:-=+*#%@'):
-    cap = cv2.VideoCapture('/dev/video4')
+    # cap = cv2.VideoCapture('/dev/video4')
+    cap = cv2.VideoCapture(0)
 
     if cap.isOpened():
         ret, frame = cap.read()
@@ -65,5 +66,5 @@ def ascii_vid(ascii_width: int = 150, chars: str= '.:-=+*#%@'):
 
 
 chars = r'''$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`'. '''[::-1]
-ascii_vid(250, chars)  
+ascii_vid(100)  
 cv2.destroyAllWindows()
